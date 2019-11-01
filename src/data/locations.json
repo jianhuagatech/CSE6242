@@ -1,0 +1,22 @@
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "LOC_ID": "123",
+        "NAME": "SQ5",
+        "ADDRESS": "848 Spring St NW, Atlanta, GA 30308",
+        "DESCRIPTIO": "safety ratings: 10"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-84.389069, 33.777981]
+      }
+    }
+  ]
+}
