@@ -1,83 +1,131 @@
+
 import React, { useState, useEffect } from "react";
-import {
-  withGoogleMap,
-  withScriptjs,
-  GoogleMap,
-  Marker,
-  InfoWindow
-} from "react-google-maps";
-import * as locationData from "./data/locations.json";
-import mapStyles from "./mapStyles";
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Link from '@material-ui/core/Link';
+import Paper from '@material-ui/core/Paper';
+import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
+import HelpOutlineIcon from '@material-ui/icons/Help';
 
-function Map() {
-  const [selectedLocation, setSelectedLocation] = useState(null);
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import MapWrapper from './MapWrapper';
+import ReactDOM from 'react-dom';
 
-  useEffect(() => {
-    const listener = e => {
-      if (e.key === "Escape") {
-        setSelectedLocation(null);
-      }
-    };
-    window.addEventListener("keydown", listener);
 
-    return () => {
-      window.removeEventListener("keydown", listener);
-    };
-  }, []);
-
+function Copyright() {
   return (
-    <GoogleMap
-      defaultZoom={12}
-      defaultCenter={{ lat: 33.771309, lng: -84.392929 }}
-    >
-      {locationData.features.map(location => (
-        <Marker
-          key={location.properties.LOC_ID}
-          position={{
-            lat: location.geometry.coordinates[1],
-            lng: location.geometry.coordinates[0]
-          }}
-          onClick={() => {
-            setSelectedLocation(location);
-          }}
-          icon={{
-            url: `/home.svg`,
-            scaledSize: new window.google.maps.Size(25, 25)
-          }}
-        />
-      ))}
-
-      {selectedLocation && (
-        <InfoWindow
-          onCloseClick={() => {
-            setSelectedLocation(null);
-          }}
-          position={{
-            lat: selectedLocation.geometry.coordinates[1],
-            lng: selectedLocation.geometry.coordinates[0]
-          }}
-        >
-          <div>
-            <h2>{selectedLocation.properties.NAME}</h2>
-            <p>{selectedLocation.properties.DESCRIPTIO}</p>
-          </div>
-        </InfoWindow>
-      )}
-    </GoogleMap>
+    <Typography variant="body2" color="textSecondary" align="center">
+      {'Copyright © '}
+      <Link color="inherit" href="https://poloclub.github.io/cse6242-2019fall-campus/">
+        CSE6242
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
   );
 }
 
-const MapWrapped = withScriptjs(withGoogleMap(Map));
+const useStyles = makeStyles(theme => ({
+  root: {
+    height: '100vh',
+  },
+  image: {
+    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  },
+  paper: {
+    margin: theme.spacing(8, 4),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
 
 export default function App() {
+  const classes = useStyles();
+  const [bed, setBed] = useState(0);
+  const [bath, setBath] = useState(0);
+  function handleBedFieldChange(event) {
+    setBed({value: event.target.value});
+  }
+  function handleBathFieldChange(event) {
+    setBath({value: event.target.value});
+  }
+  function onClick(bed, bath){
+    ReactDOM.render(<MapWrapper />, document.getElementById('root'))
+    
+  }
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <MapWrapped
-        googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=`}
-        loadingElement={<div style={{ height: `100%` }} />}
-        containerElement={<div style={{ height: `100%` }} />}
-        mapElement={<div style={{ height: `100%` }} />}
-      />
-    </div>
+    <Grid container component="main" className={classes.root}>
+      <CssBaseline />
+      <Grid item xs={false} sm={4} md={7} className={classes.image} />
+      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <HelpOutlineIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+          Tell Me What You're Looking For ~
+          </Typography>
+          <form className={classes.form} noValidate>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="bed"
+              label="Number of Bedrooms"
+              name="bed"
+              autoFocus
+              onChange = {handleBedFieldChange} 
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="bath"
+              label="Number of Bathrooms"
+              id="bath"
+              onChange = {handleBathFieldChange} 
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={onClick}
+            >
+              Let's go!
+            </Button>
+            <Box mt={5}>
+              <Copyright />
+            </Box>
+          </form>
+        </div>
+      </Grid>
+    </Grid>
   );
+  
 }
+
