@@ -72,7 +72,6 @@ export default function App() {
   }
   function onClick(bed, bath){
     ReactDOM.render(<MapWrapper />, document.getElementById('root'))
-    
   }
   return (
     <Grid container component="main" className={classes.root}>
