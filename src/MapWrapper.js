@@ -32,6 +32,11 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import LocalDiningIcon from '@material-ui/icons/LocalDining';
+import ReportProblemIcon from '@material-ui/icons/ReportProblem';
+import ScoreIcon from '@material-ui/icons/Score';
+
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import {
     withGoogleMap,
@@ -40,8 +45,9 @@ import {
     Marker,
     InfoWindow
   } from "react-google-maps";
-  import * as locationData from "./data/locations.json";
-  import mapStyles from "./mapStyles";
+import * as locationData from "./data/locations.json";
+import mapStyles from "./mapStyles";
+import MainListItems from "./MainListItems";
 
 const drawerWidth = 240;
 
@@ -185,42 +191,7 @@ function Map() {
   }
 
   const MapWrapped = withScriptjs(withGoogleMap(Map));
-  const mainListItems = (
-    <div>
-      <ListSubheader inset>Tell Us What is Important for You</ListSubheader>
-      <ListItem button>
-        <InputLabel id="label">Age</InputLabel>
-        <Select labelId="label" id="select" value="20">
-          <MenuItem value="10">Ten</MenuItem>
-          <MenuItem value="20">Twenty</MenuItem>
-        </Select>
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <ShoppingCartIcon />
-        </ListItemIcon>
-        <ListItemText primary="Orders" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <PeopleIcon />
-        </ListItemIcon>
-        <ListItemText primary="Customers" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <BarChartIcon />
-        </ListItemIcon>
-        <ListItemText primary="Reports" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <LayersIcon />
-        </ListItemIcon>
-        <ListItemText primary="Integrations" />
-      </ListItem>
-    </div>
-  );
+
   
   export const secondaryListItems = (
     <div>
@@ -255,6 +226,19 @@ function Map() {
       setOpen(false);
     };
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+    const [rankState, setRankState] = React.useState({
+      safety: 1,
+      convenience: 1,
+      distance: 1,
+      price: 1
+    });
+    const handleRank = name => event => {
+      setRankState({
+        ...rankState,
+        [name]: event.target.value,
+      });
+    };
   
     return (
       <div className={classes.root}>
@@ -293,7 +277,8 @@ function Map() {
             </IconButton>
           </div>
           <Divider />
-          <List>{mainListItems}</List>
+          {/* <List>{mainListItems}</List> */}
+          <MainListItems state = {rankState} handleChange = {handleRank}/>
           <Divider />
           <List>{secondaryListItems}</List>
         </Drawer>
@@ -312,4 +297,6 @@ function Map() {
       </div>
     );
   } 
+  
+
   
