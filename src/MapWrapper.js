@@ -48,7 +48,7 @@ import {
 import * as locationData from "./data/locations.json";
 import mapStyles from "./mapStyles";
 import MainListItems from "./MainListItems";
-
+import ZipCodeItems  from "./ZipCodeItems";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -130,92 +130,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Map() {
-    const [selectedLocation, setSelectedLocation] = useState(null);
-  
-    useEffect(() => {
-      const listener = e => {
-        if (e.key === "Escape") {
-          setSelectedLocation(null);
-        }
-      };
-      window.addEventListener("keydown", listener);
-  
-      return () => {
-        window.removeEventListener("keydown", listener);
-      };
-    }, []);
-  
-    return (
-      <GoogleMap
-        defaultZoom={12}
-        defaultCenter={{ lat: 33.771309, lng: -84.392929 }}
-      >
-        {locationData.locations.map(location => (
-          <Marker
-            key={location.id}
-            position={{
-              lat: location.latitude,
-              lng: location.longitude
-            }}
-            onClick={() => {
-              setSelectedLocation(location);
-            }}
-            icon={{
-              url: `/home.svg`,
-              scaledSize: new window.google.maps.Size(25, 25)
-            }}
-          />
-        ))}
-  
-        {selectedLocation && (
-          <InfoWindow
-            onCloseClick={() => {
-              setSelectedLocation(null);
-            }}
-            position={{
-              lat: selectedLocation.latitude,
-              lng: selectedLocation.longitude
-            }}
-          >
-            <div>
-              <h2>{selectedLocation.address}</h2>
-              <p>{"Bed: " + selectedLocation.bed + ", Bath: "+ selectedLocation.bath + ", Sqft: " +  selectedLocation.Sqft}</p>
-              <p>{"Price: " + selectedLocation.price + "$/Month , Safety Rate: 5" + ", Convince Rate: 5" }</p>
-              <p>{"Zillow Link: " + selectedLocation.link}</p>
-            </div>
-          </InfoWindow>
-        )}
-      </GoogleMap>
-    );
-  }
-
-  const MapWrapped = withScriptjs(withGoogleMap(Map));
-
-  
-  export const secondaryListItems = (
-    <div>
-      <ListSubheader inset>Zip Code Searching</ListSubheader>
-      <ListItem button>
-        <ListItemIcon>
-          <AssignmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Current month" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <AssignmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Last quarter" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <AssignmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Year-end sale" />
-      </ListItem>
-    </div>
-  );
   export default function MapWrapper(bed, bath) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(true);
@@ -239,7 +153,72 @@ function Map() {
         [name]: event.target.value,
       });
     };
+ 
+    const [zipCodeState, setZipCodeState] =  React.useState(99999);
+    const handleZipChange = (event) => {
+      setZipCodeState(event.target.value);
+    };
+    function Map() {
+      const [selectedLocation, setSelectedLocation] = useState(null);
+    
+      useEffect(() => {
+        const listener = e => {
+          if (e.key === "Escape") {
+            setSelectedLocation(null);
+          }
+        };
+        window.addEventListener("keydown", listener);
+    
+        return () => {
+          window.removeEventListener("keydown", listener);
+        };
+      }, []);
+      return (
+        <GoogleMap
+          defaultZoom={12}
+          defaultCenter={{ lat: 33.771309, lng: -84.392929 }}
+        >
+          {locationData.locations.map(location => (
+            (zipCodeState==  99999 || parseInt(location.zipcode ) == zipCodeState) &&
+            <Marker
+              key={location.uid}
+              position={{
+                lat: location.latitude,
+                lng: location.longitude
+              }}
+              onClick={() => {
+                setSelectedLocation(location);
+              }}
+              icon={{
+                url: `/home.svg`,
+                scaledSize: new window.google.maps.Size(25, 25)
+              }}
+            />
+          ))}
+    
+          {selectedLocation && (
+            <InfoWindow
+              onCloseClick={() => {
+                setSelectedLocation(null);
+              }}
+              position={{
+                lat: selectedLocation.latitude,
+                lng: selectedLocation.longitude
+              }}
+            >
+              <div>
+                <h2>{selectedLocation.address}</h2>
+                <p>{"Bed: " + selectedLocation.bed + ", Bath: "+ selectedLocation.bath + ", Sqft: " +  selectedLocation.Sqft}</p>
+                <p>{"Price: " + selectedLocation.price + "$/Month , Safety Rate: 5" + ", Convince Rate: 5" }</p>
+                <p>{"Zillow Link: " + selectedLocation.link}</p>
+              </div>
+            </InfoWindow>
+          )}
+        </GoogleMap>
+      );
+    }
   
+    const MapWrapped = withScriptjs(withGoogleMap(Map));
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -280,7 +259,9 @@ function Map() {
           {/* <List>{mainListItems}</List> */}
           <MainListItems state = {rankState} handleChange = {handleRank}/>
           <Divider />
-          <List>{secondaryListItems}</List>
+          {/* <List>{secondaryListItems}</List> */}
+          <ZipCodeItems state = {zipCodeState} handleChange = {handleZipChange}/>
+
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
