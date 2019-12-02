@@ -131,6 +131,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
   export default function MapWrapper(bed, bath) {
+    
     const classes = useStyles();
     const [open, setOpen] = React.useState(true);
     const handleDrawerOpen = () => {
@@ -173,13 +174,57 @@ const useStyles = makeStyles(theme => ({
           window.removeEventListener("keydown", listener);
         };
       }, []);
+      const findDistence = (x1,y1,x2,y2) =>{
+        return (x1- x2)*(x1- x2) + (y1- y2)*(y1- y2) 
+      }
+
+      var minP = locationData.locations[0].price
+      var minD = findDistence(locationData.locations[0].latitude, locationData.locations[0].longitude, 33.771309, -84.392929 )  
+      locationData.locations.forEach(
+        element => {
+          var currentDistence = findDistence(element.latitude, element.longitude, 33.771309, -84.392929 )
+          if(element.price < minP) minP = element.price;
+          if(currentDistence < minD) minD = currentDistence;         
+        }
+      );
+      var maxR =  0
+        console.log(rankState);
+      locationData.locations.forEach(
+        element => {
+          var currentRate = rankState['convenience'] * element.yelp_rating +
+          rankState['safety'] * element.crime_rating+
+          (minP * 1.0 / element.price ) * 100 * rankState['price'] +
+          (minD * 1.0 / findDistence(element.latitude, element.longitude, 33.771309, -84.392929 )) * 100 * rankState['distance']
+          if(currentRate > maxR) maxR = currentRate;
+        }
+      );
+
+      const findScore = (location) =>{
+        var pScore =(minP * 1.0 / location.price ) * 100;
+        var dScore =(minD * 1.0 / findDistence(location.latitude, location.longitude, 33.771309, -84.392929 )) * 100;
+        var score = (  (rankState['convenience'] * location.yelp_rating +
+        rankState['safety'] * location.crime_rating+
+        pScore * rankState['price'] +
+        dScore * rankState['distance']) / maxR ) * 100
+        if( score < 15.0 ) return '/one.png';
+        else if( score < 25.0) return '/two.png';
+        else if( score < 35.0) return '/three.png';
+        else if( score < 45.0) return '/four.png';
+        else if( score < 55.0) return '/five.png';
+        else if( score < 65.0) return '/six.png';
+        else if( score < 75.0) return '/seven.png';
+        else if( score < 85.0) return '/eight.png';
+        else if( score < 95.0) return '/nine.png';
+        else return '/ten.png';
+      }
+     
       return (
         <GoogleMap
           defaultZoom={12}
           defaultCenter={{ lat: 33.771309, lng: -84.392929 }}
         >
           {locationData.locations.map(location => (
-            (zipCodeState==  99999 || parseInt(location.zipcode ) == zipCodeState) &&
+            (zipCodeState ==  99999 || parseInt(location.zipcode ) == zipCodeState) &&
             <Marker
               key={location.uid}
               position={{
@@ -190,8 +235,8 @@ const useStyles = makeStyles(theme => ({
                 setSelectedLocation(location);
               }}
               icon={{
-                url: `/home.svg`,
-                scaledSize: new window.google.maps.Size(25, 25)
+                url: findScore(location),
+                scaledSize: new window.google.maps.Size(15,15)
               }}
             />
           ))}
