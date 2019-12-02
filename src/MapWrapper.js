@@ -260,6 +260,7 @@ const useStyles = makeStyles(theme => ({
               }}
             >
               <InfoBox name = {selectedLocation.name}
+                       uid = {selectedLocation.uid}
                        address = {selectedLocation.address}
                        bed = {selectedLocation.bedrooms}
                        bath = {selectedLocation.bathrooms}
@@ -268,9 +269,10 @@ const useStyles = makeStyles(theme => ({
                        safety = {Math.round(selectedLocation.crime_rating)}
                        convience = {Math.round(selectedLocation.yelp_rating)}
                        link = {selectedLocation.link}
-                       recommend = {["036057c6-08e1-4bf0-8d14-7c91de44aa56", "eaefcbe4-72b4-4fac-b985-90616d131a9f", "4d36859d-cfdf-4be8-9573-b004ff609662"]}
                        selectedLocation = {selectedLocation}
-                       setSelectedLocation = {setSelectedLocation}/>
+                       setSelectedLocation = {setSelectedLocation}
+                       zipCodeState= {zipCodeState}
+                       setZipCodeState = {setZipCodeState}/>
             </InfoWindow>
           )}
         </GoogleMap>

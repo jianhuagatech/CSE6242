@@ -9,7 +9,8 @@ def process_json(input_json_file, output_json_file):
 
     # 修改json中的数据
     locations = {}
-    for location in json_data["locations"]:
+    #for location in json_data["locations"]:
+    for location in json_data:
         print(location)
         locations[location["uid"]] = location
     
@@ -18,4 +19,4 @@ def process_json(input_json_file, output_json_file):
     file_in.close()
     file_out.close()
  
-process_json("./locations.json","./processedLocations.json")
+process_json("./Recommand.json","./processedLocations.json")

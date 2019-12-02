@@ -29,10 +29,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function InfoBox(props) {
     const classes = useStyles();
-    const {name, address, bed, bath, Sqft, price, safety, convience, link, recommend, selectedLocation, setSelectedLocation} = props;
+    const {name, uid, address, bed, bath, Sqft, price, safety, convience, link, selectedLocation, setSelectedLocation, zipCodeState, setZipCodeState} = props;
+    const recommend = [locationData.default[uid].recommand_1, locationData.default[uid].recommand_2, locationData.default[uid].recommand_3]
     
     function Recommend(props) {
-        const {rank, uid , selectedLocation, setSelectedLocation} = props;
+        const {rank, uid , selectedLocation, setSelectedLocation, zipCodeState, setZipCodeState} = props;
             
         return (
             <Box display="flex" justifyContent="flext-start" m={1}>
@@ -49,6 +50,7 @@ export default function InfoBox(props) {
                 <Link component="button" color="black" fontSize="24px" margin = {5}
                       onClick={() => {
                         setSelectedLocation(locationData.default[uid]);
+                        if(zipCodeState != 99999) setZipCodeState(locationData.default[uid].zipcode)
                       }}>
                           {locationData.default[uid].name}
                 </Link>
@@ -109,17 +111,18 @@ export default function InfoBox(props) {
                                 </Box>
                             </Grid>
                             <Grid item xs>
+                                <Typography variant="body1" component="p">Similar Choices: </Typography>
                                 <Recommend rank = {1} uid = {recommend[0]} selectedLocation = {selectedLocation}
-                                            setSelectedLocation = {setSelectedLocation}/>
+                                            setSelectedLocation = {setSelectedLocation} zipCodeState = {zipCodeState} setZipCodeState = {setZipCodeState}/>
                                 <Recommend rank = {2} uid = {recommend[1]} selectedLocation = {selectedLocation}
-                                            setSelectedLocation = {setSelectedLocation}/>
+                                            setSelectedLocation = {setSelectedLocation} zipCodeState = {zipCodeState} setZipCodeState = {setZipCodeState}/>
                                 <Recommend rank = {3} uid = {recommend[2]} selectedLocation = {selectedLocation}
-                                            setSelectedLocation = {setSelectedLocation}/> 
+                                            setSelectedLocation = {setSelectedLocation} zipCodeState = {zipCodeState} setZipCodeState = {setZipCodeState}/> 
                             </Grid>
                         </Grid>
                     </Grid>
                     <Grid>
-                        <Box display="flex" justifyContent="center">
+                        <Box display="flex" justifyContent="flex-start" alignItems="center">
                             <Box textAlign= "center" component="span" display="inline" bgcolor="transparent" fontSize = "16px" color="black" lineHeight = "30px">
                                 {price}
                             </Box>
