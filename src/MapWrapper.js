@@ -49,6 +49,7 @@ import * as locationData from "./data/locations.json";
 import mapStyles from "./mapStyles";
 import MainListItems from "./MainListItems";
 import ZipCodeItems  from "./ZipCodeItems";
+import InfoBox from "./InfoBox";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -188,7 +189,6 @@ const useStyles = makeStyles(theme => ({
         }
       );
       var maxR =  0
-        console.log(rankState);
       locationData.locations.forEach(
         element => {
           var currentRate = rankState['convenience'] * element.yelp_rating +
@@ -252,12 +252,18 @@ const useStyles = makeStyles(theme => ({
                 lng: selectedLocation.longitude
               }}
             >
-              <div>
-                <h2>{selectedLocation.address}</h2>
-                <p>{"Bed: " + selectedLocation.bed + ", Bath: "+ selectedLocation.bath + ", Sqft: " +  selectedLocation.Sqft}</p>
-                <p>{"Price: " + selectedLocation.price + "$/Month , Safety Rate: 5" + ", Convince Rate: 5" }</p>
-                <p>{"Zillow Link: " + selectedLocation.link}</p>
-              </div>
+              <InfoBox name = {selectedLocation.name}
+                       address = {selectedLocation.address}
+                       bed = {selectedLocation.bedrooms}
+                       bath = {selectedLocation.bathrooms}
+                       Sqft = {selectedLocation.Sqft}
+                       price = {selectedLocation.price}
+                       safety = {5}
+                       convience = {5}
+                       link = {selectedLocation.link}
+                       recommend = {["036057c6-08e1-4bf0-8d14-7c91de44aa56", "eaefcbe4-72b4-4fac-b985-90616d131a9f", "4d36859d-cfdf-4be8-9573-b004ff609662"]}
+                       selectedLocation = {selectedLocation}
+                       setSelectedLocation = {setSelectedLocation}/>
             </InfoWindow>
           )}
         </GoogleMap>
