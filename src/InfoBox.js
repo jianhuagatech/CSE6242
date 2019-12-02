@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 
 import * as locationData from "./data/processedLocations.json";
+import * as locationData2 from "./data/locations.json";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -34,6 +35,16 @@ export default function InfoBox(props) {
     
     function Recommend(props) {
         const {rank, uid , selectedLocation, setSelectedLocation, zipCodeState, setZipCodeState} = props;
+
+        var data;
+        // console.log(locationData2.locations)
+        for(var i = 0; i < locationData2.locations.length; i++) {
+            if(locationData2.locations[i].uid == uid) {
+                data = locationData2.locations[i];
+                break;
+            }
+        }
+        // console.log(data);
             
         return (
             <Box display="flex" justifyContent="flext-start" m={1}>
@@ -49,10 +60,10 @@ export default function InfoBox(props) {
                 </Box>
                 <Link component="button" color="black" fontSize="24px" margin = {5}
                       onClick={() => {
-                        setSelectedLocation(locationData.default[uid]);
-                        if(zipCodeState != 99999) setZipCodeState(locationData.default[uid].zipcode)
+                        setSelectedLocation(data);
+                        if(zipCodeState != 99999) setZipCodeState(data.zipcode)
                       }}>
-                          {locationData.default[uid].name}
+                          {data.name}
                 </Link>
         </Box>
         )
