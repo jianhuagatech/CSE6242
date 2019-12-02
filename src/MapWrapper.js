@@ -206,6 +206,7 @@ const useStyles = makeStyles(theme => ({
         rankState['safety'] * location.crime_rating+
         pScore * rankState['price'] +
         dScore * rankState['distance']) / maxR ) * 100
+
         if( score < 15.0 ) return '/one.png';
         else if( score < 25.0) return '/two.png';
         else if( score < 35.0) return '/three.png';
