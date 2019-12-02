@@ -97,6 +97,18 @@ export default function InfoBox(props) {
                                 </Box>
                             </Grid>
                             <Grid item xs>
+                                <Box display="inline">
+                                    <Box display="inline" paddingRight="10px" marginRight={1}>
+                                        <Typography variant="body1" component="span">Safety: </Typography>
+                                        <Typography variant="body2" component="span">{safety}</Typography>
+                                    </Box>
+                                    <Box display="inline" paddingRight="10px" marginRight={1}>
+                                        <Typography variant="body1" component="span">Convenience: </Typography>
+                                        <Typography variant="body2" component="span">{convience}</Typography>
+                                    </Box>
+                                </Box>
+                            </Grid>
+                            <Grid item xs>
                                 <Recommend rank = {1} uid = {recommend[0]} selectedLocation = {selectedLocation}
                                             setSelectedLocation = {setSelectedLocation}/>
                                 <Recommend rank = {2} uid = {recommend[1]} selectedLocation = {selectedLocation}

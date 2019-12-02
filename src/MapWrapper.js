@@ -258,8 +258,8 @@ const useStyles = makeStyles(theme => ({
                        bath = {selectedLocation.bathrooms}
                        Sqft = {selectedLocation.Sqft}
                        price = {selectedLocation.price}
-                       safety = {5}
-                       convience = {5}
+                       safety = {Math.round(selectedLocation.crime_rating)}
+                       convience = {Math.round(selectedLocation.yelp_rating)}
                        link = {selectedLocation.link}
                        recommend = {["036057c6-08e1-4bf0-8d14-7c91de44aa56", "eaefcbe4-72b4-4fac-b985-90616d131a9f", "4d36859d-cfdf-4be8-9573-b004ff609662"]}
                        selectedLocation = {selectedLocation}
