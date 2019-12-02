@@ -65,13 +65,13 @@ export default function App() {
   const [bed, setBed] = useState(0);
   const [bath, setBath] = useState(0);
   function handleBedFieldChange(event) {
-    setBed({value: event.target.value});
+    setBed(event.target.value);
   }
   function handleBathFieldChange(event) {
-    setBath({value: event.target.value});
+    setBath( event.target.value);
   }
-  function onClick(bed, bath){
-    ReactDOM.render(<MapWrapper />, document.getElementById('root'))
+  function onClick(){
+    ReactDOM.render(<MapWrapper bed = {bed} bath = {bath}/>, document.getElementById('root'))
   }
   return (
     <Grid container component="main" className={classes.root}>
@@ -83,7 +83,7 @@ export default function App() {
             <HelpOutlineIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-          Tell Me What You're Looking For ~
+          Tell Us What You're Looking For ~
           </Typography>
           <form className={classes.form} noValidate>
             <TextField

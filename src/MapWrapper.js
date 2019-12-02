@@ -46,6 +46,8 @@ import {
     InfoWindow
   } from "react-google-maps";
 import * as locationData from "./data/locations.json";
+import * as linearModel from "./data/Predict_bed_bath.json";
+
 import mapStyles from "./mapStyles";
 import MainListItems from "./MainListItems";
 import ZipCodeItems  from "./ZipCodeItems";
@@ -131,8 +133,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-  export default function MapWrapper(bed, bath) {
-    
+  export default function MapWrapper(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(true);
     const handleDrawerOpen = () => {
@@ -183,19 +184,24 @@ const useStyles = makeStyles(theme => ({
       var minD = findDistence(locationData.locations[0].latitude, locationData.locations[0].longitude, 33.771309, -84.392929 )  
       locationData.locations.forEach(
         element => {
-          var currentDistence = findDistence(element.latitude, element.longitude, 33.771309, -84.392929 )
-          if(element.price < minP) minP = element.price;
-          if(currentDistence < minD) minD = currentDistence;         
+          if( (props.bed == 0 || props.bath == 0) || (element.bedrooms == props.bed && element.bathrooms == props.bath)){
+            var currentDistence = findDistence(element.latitude, element.longitude, 33.771309, -84.392929 )
+            if(element.price < minP) minP = element.price;
+            if(currentDistence < minD) minD = currentDistence;    
+          }
+            
         }
       );
       var maxR =  0
       locationData.locations.forEach(
         element => {
-          var currentRate = rankState['convenience'] * element.yelp_rating +
-          rankState['safety'] * element.crime_rating+
-          (minP * 1.0 / element.price ) * 100 * rankState['price'] +
-          (minD * 1.0 / findDistence(element.latitude, element.longitude, 33.771309, -84.392929 )) * 100 * rankState['distance']
-          if(currentRate > maxR) maxR = currentRate;
+          if( (props.bed == 0 || props.bath == 0) || (element.bedrooms == props.bed && element.bathrooms == props.bath)){
+            var currentRate = rankState['convenience'] * element.yelp_rating +
+            rankState['safety'] * element.crime_rating+
+            (minP * 1.0 / element.price ) * 100 * rankState['price'] +
+            (minD * 1.0 / findDistence(element.latitude, element.longitude, 33.771309, -84.392929 )) * 100 * rankState['distance']
+            if(currentRate > maxR) maxR = currentRate;
+          }
         }
       );
 
@@ -225,7 +231,8 @@ const useStyles = makeStyles(theme => ({
           defaultCenter={{ lat: 33.771309, lng: -84.392929 }}
         >
           {locationData.locations.map(location => (
-            (zipCodeState ==  99999 || parseInt(location.zipcode ) == zipCodeState) &&
+            (zipCodeState ==  99999 || parseInt(location.zipcode ) == zipCodeState 
+            ) && ((props.bed == 0 || props.bath == 0) || (location.bedrooms == props.bed && location.bathrooms == props.bath))&&
             <Marker
               key={location.uid}
               position={{
@@ -269,7 +276,24 @@ const useStyles = makeStyles(theme => ({
         </GoogleMap>
       );
     }
-  
+    const getHeaderText = () =>{
+      
+      if (props.bath == 0 || props.bed == 0 )return "Dashboard"
+      var unit = props.bed + "bed/" + props.bath + "bath"
+      if (zipCodeState == 99999) return unit + " in all regions"
+      else {
+        var co_bed = 0
+        var co_bath = 0
+        for(var i = 0; i < 20; i ++){
+            if(linearModel.default[i].zipcode == zipCodeState){
+              co_bed = linearModel.default[i].co_bedrooms
+              co_bath = linearModel.default[i].co_bathrooms
+            }
+        }
+      
+        return unit + " in " + zipCodeState + " region will run you about " + parseInt(props.bed*co_bed + props.bath*co_bath) + " dollars"
+      }
+    };
     const MapWrapped = withScriptjs(withGoogleMap(Map));
     return (
       <div className={classes.root}>
@@ -286,7 +310,7 @@ const useStyles = makeStyles(theme => ({
               <MenuIcon />
             </IconButton>
             <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-              Dashboard
+              {getHeaderText()}
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -313,7 +337,6 @@ const useStyles = makeStyles(theme => ({
           <Divider />
           {/* <List>{secondaryListItems}</List> */}
           <ZipCodeItems state = {zipCodeState} handleChange = {handleZipChange}/>
-
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
